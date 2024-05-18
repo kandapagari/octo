@@ -6,6 +6,7 @@ from typing import Callable, Mapping, Optional, Sequence, Tuple, Union
 from absl import logging
 import dlimp as dl
 import numpy as np
+from octo.utils.rlds_utils import find_datasets
 import tensorflow as tf
 import tensorflow_datasets as tfds
 
@@ -381,7 +382,11 @@ def make_dataset_from_rlds(
 
         return traj
 
-    builder = tfds.builder(name, data_dir=data_dir)
+    # builder = tfds.builder(name, data_dir=data_dir)
+    dataset_dirs = find_datasets(data_dir)
+    print(f"Found {dataset_dirs} rlds datasets to merge.")
+    # Create a merged dataset of all the datasets in the given directories
+    builder = tfds.builder_from_directories(list(dataset_dirs))
 
     # load or compute dataset statistics
     if isinstance(dataset_statistics, str):
